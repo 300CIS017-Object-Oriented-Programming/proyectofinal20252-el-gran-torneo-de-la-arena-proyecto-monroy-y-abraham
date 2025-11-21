@@ -7,14 +7,16 @@
 
 #include <string>
 #include <vector>
+#include <iostream>
+
 using namespace std;
 
-// Forward declaration
+
 class ObjetoMagico;
 
 // Estructura para efectos temporales
 struct Efecto {
-    string tipo;           // "ataque", "defensa", "escudo"
+    string tipo;           // "ataque", "defensa"
     int valor;
     int turnosRestantes;
 };
@@ -31,6 +33,11 @@ protected:
     int defensaOriginal;
     bool vivo;
     string rol;
+
+    // atributos para la experiencia del personaje
+    int experiencia;
+    int experienciaNecesaria;
+
     vector<ObjetoMagico*> objetosEquipados;
     vector<Efecto> efectosActivos;
 
@@ -39,22 +46,31 @@ public:
     Personaje(string nombre, int nivel, int vida, int ataque, int defensa, string rol);
     virtual ~Personaje();
 
-    // Métodos virtuales puros (abstractos)
+    // Métodos virtuales (implemetantacion polimorfismo)
     virtual int atacar(Personaje* objetivo) = 0;
     virtual void realizarAccion(vector<Personaje*>& aliados, vector<Personaje*>& enemigos) = 0;
 
-    // Métodos comunes
+    // Métodos de cada personaje
     void recibirDanio(int danio);
     void curar(int cantidad);
     bool estaVivo() const;
+
+    // Gestión de Objetos
     bool agregarObjeto(ObjetoMagico* objeto);
     bool usarObjeto(int indice);
+
+    // Efectos
     void aplicarEfecto(string tipo, int valor, int duracion);
     void actualizarEfectos();
     void resetearEstadisticas();
+
+    // metodo para ganar experiencia y subir el nivel
+    void ganarExperiencia(int cantidad);
+    void subirNivel();
+
     void mostrarEstado() const;
 
-    // Getters
+    // Getters obtener
     string getNombre() const { return nombre; }
     int getNivel() const { return nivel; }
     int getVida() const { return vida; }
