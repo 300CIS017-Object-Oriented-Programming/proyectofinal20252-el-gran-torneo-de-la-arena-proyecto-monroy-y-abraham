@@ -28,4 +28,5 @@ private:
     bool consumirEnergia(int cantidad);
     void meditar(); // Recuperar energia
 };
+
 #endif //PROYECTOFINAL20252_EL_GRAN_TORNEO_DE_LA_ARENA_PROYECTO_MONROY_Y_ABRAHAM_MAGO_H

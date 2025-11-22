@@ -76,7 +76,7 @@ bool Arquero::verificarPrecision() {
     return chance < precision;
 }
 
-// --- LOGICA INTERACTIVA CON ESTAMINA ---
+// Logica interactiva incluyendo la estamina del personaje
 void Arquero::realizarAccion(vector<Personaje*>& aliados, vector<Personaje*>& enemigos) {
     if (!estaVivo()) return;
 

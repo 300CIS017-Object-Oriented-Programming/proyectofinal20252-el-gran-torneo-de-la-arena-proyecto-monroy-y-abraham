@@ -12,8 +12,6 @@ class Arquero : public Personaje {
 private:
     float precision;
     int flechasEspeciales;
-
-    // NUEVO RECURSO: CANSANCIO / ESTAMINA
     int estamina;
     int estaminaMaxima;
 
