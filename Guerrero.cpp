@@ -1,8 +1,6 @@
 //
 // Created by Jesus Esteban Monroy on 21/11/2025.
 //
-
-#include "Guerrero.h"
 #include "Guerrero.h"
 #include <iostream>
 #include <limits>
