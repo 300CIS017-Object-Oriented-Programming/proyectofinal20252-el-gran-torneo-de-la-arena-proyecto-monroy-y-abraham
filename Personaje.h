@@ -4,6 +4,7 @@
 
 #ifndef PROYECTOFINAL20252_EL_GRAN_TORNEO_DE_LA_ARENA_PROYECTO_MONROY_Y_ABRAHAM_PERSONAJE_H
 #define PROYECTOFINAL20252_EL_GRAN_TORNEO_DE_LA_ARENA_PROYECTO_MONROY_Y_ABRAHAM_PERSONAJE_H
+
 #include <string>
 #include <vector>
 #include <iostream>
@@ -88,4 +89,6 @@ protected:
     int calcularDanioBase(Personaje* objetivo);
     int aplicarVariacionAleatoria(int valor, int porcentaje = 10);
 };
+
+
 #endif //PROYECTOFINAL20252_EL_GRAN_TORNEO_DE_LA_ARENA_PROYECTO_MONROY_Y_ABRAHAM_PERSONAJE_H
