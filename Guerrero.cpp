@@ -56,7 +56,7 @@ bool Guerrero::intentarGolpeCritico() {
     return chance < probabilidadCritico;
 }
 
-// --- INTERACCION ---
+// interaccion
 void Guerrero::realizarAccion(vector<Personaje*>& aliados, vector<Personaje*>& enemigos) {
     if (!estaVivo()) return;
 
