@@ -15,6 +15,8 @@ void TomoConocimiento::usar(Personaje* objetivo) {
     cout << "   [INFO] " << objetivo->getNombre() << " lee el tomo y gana sabiduría!" << endl;
     cout << "   [INFO] Todas las estadísticas aumentan ligeramente" << endl;
     objetivo->setAtaque(objetivo->getAtaque() + 3);
+    objetivo->setDefensa(objetivo->getDefensa() + 3);
+    objetivo->curar(20);
 
     marcarUsado();
 }

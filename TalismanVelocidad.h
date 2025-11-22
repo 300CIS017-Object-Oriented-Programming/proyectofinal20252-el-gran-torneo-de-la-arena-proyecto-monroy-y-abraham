@@ -6,8 +6,20 @@
 #define PROYECTOFINAL20252_EL_GRAN_TORNEO_DE_LA_ARENA_PROYECTO_MONROY_Y_ABRAHAM_TALISMANVELOCIDAD_H
 
 
-class TalismanVelocidad {
+#include "Objeto magico.h"
+#include <iostream>
+
+class RunaProtectora : public ObjetoMagico {
+
+private:
+     int BonusTurnos;
+
+public:
+     talismanVelocidad(int stock);
+     void usar(Personaje* objeto) override;
+
 };
+
 
 
 #endif //PROYECTOFINAL20252_EL_GRAN_TORNEO_DE_LA_ARENA_PROYECTO_MONROY_Y_ABRAHAM_TALISMANVELOCIDAD_H
