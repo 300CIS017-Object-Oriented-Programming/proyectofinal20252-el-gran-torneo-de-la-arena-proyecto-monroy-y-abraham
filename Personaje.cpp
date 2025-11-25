@@ -5,28 +5,25 @@
 #include "Personaje.h"
 #include "ObjetoMagico.h"
 #include <iostream>
+#include <vector>
+#include <cstdlib>
+
 
 using namespace std;
 
-Personaje::Personaje(string nombre, int nivel, int vida, int ataque, int defensa, string rol) {
-    this->nombre = nombre;
-    this->nivel = nivel;
-    this->vida = vida;
-    this->vidaMaxima = vida;
-    this->ataque = ataque;
-    this->ataqueOriginal = ataque;
-    this->defensa = defensa;
-    this->defensaOriginal = defensa;
-    this->vivo = true;
-    this->rol = rol;
-
-    // XP empieza en 0
-    this->experiencia = 0;
-
-    // --- AJUSTE DE DIFICULTAD ---
-    // Formula estandar: Nivel * 100.
-    // Nivel 1 pide 100 XP.
-    this->experienciaNecesaria = 100 * nivel;
+Personaje::Personaje(std::string nombre, int nivel, int vida, int ataque, int defensa, std::string rol)
+    : nombre(nombre),
+      nivel(nivel),
+      vida(vida),
+      vidaMaxima(vida),
+      ataque(ataque),
+      ataqueOriginal(ataque),
+      defensa(defensa),
+      defensaOriginal(defensa),
+      vivo(true),
+      rol(rol),
+      experiencia(0),
+      experienciaNecesaria(100 * nivel) {  // XP base por nivel
 }
 
 Personaje::~Personaje() {
@@ -34,7 +31,8 @@ Personaje::~Personaje() {
     efectosActivos.clear();
 }
 
-// --- SISTEMA DE NIVEL ---
+
+// --- SISTEMA DE EXPERIENCIA Y NIVEL ---
 
 void Personaje::ganarExperiencia(int cantidad) {
     if (!vivo) return;
@@ -42,56 +40,65 @@ void Personaje::ganarExperiencia(int cantidad) {
     experiencia += cantidad;
     cout << " > " << nombre << " gana " << cantidad << " XP." << endl;
 
-    // Bucle por si sube varios niveles de golpe
+    // Por si sube más de un nivel de golpe
     while (experiencia >= experienciaNecesaria) {
         experiencia -= experienciaNecesaria;
         subirNivel();
     }
 
-    // Mostrar barra de progreso
-    cout << "   [Progreso Nvl " << nivel+1 << ": " << experiencia << "/" << experienciaNecesaria << "]" << endl;
+    cout << "   [Progreso Nvl " << (nivel + 1)
+         << ": " << experiencia << "/" << experienciaNecesaria << "]" << endl;
 }
 
 void Personaje::subirNivel() {
     nivel++;
-    // Cada nivel es mas dificil de alcanzar (factor 150)
+
+    // Cada nuevo nivel exige más XP
     experienciaNecesaria = nivel * 150;
 
-    // Aumentos de estadisticas
-    int aumentoVida = 15 + (nivel * 2);
-    int aumentoAtaque = 3;
+    int aumentoVida    = 15 + (nivel * 2);
+    int aumentoAtaque  = 3;
     int aumentoDefensa = 2;
 
-    vidaMaxima += aumentoVida;
-    vida = vidaMaxima; // Curacion total al subir
-    ataqueOriginal += aumentoAtaque;
-    ataque = ataqueOriginal;
+    vidaMaxima      += aumentoVida;
+    vida             = vidaMaxima;      // Se cura al subir de nivel
+    ataqueOriginal  += aumentoAtaque;
+    ataque           = ataqueOriginal;
     defensaOriginal += aumentoDefensa;
-    defensa = defensaOriginal;
+    defensa          = defensaOriginal;
 
-    cout << "\n   *****************************************" << endl;
-    cout << "   * ¡LEVEL UP! " << nombre << " sube a Nivel " << nivel << "! *" << endl;
-    cout << "   * HP Max: " << vidaMaxima << " (+" << aumentoVida << ")" << endl;
-    cout << "   * Ataque: " << ataque << " (+" << aumentoAtaque << ")" << endl;
-    cout << "   *****************************************\n" << endl;
+    cout << "\n   ***********************************" << endl;
+    cout << "   * LEVEL UP: " << nombre
+         << " sube a Nivel " << nivel << " *" << endl;
+    cout << "   * HP Max: " << vidaMaxima
+         << " (+" << aumentoVida << ")" << endl;
+    cout << "   * Ataque: " << ataque
+         << " (+" << aumentoAtaque << ")" << endl;
+    cout << "   * Defensa: " << defensa
+         << " (+" << aumentoDefensa << ")" << endl;
+    cout << "   ***********************************\n" << endl;
 }
 
-// --- RESTO DE METODOS ---
+// --- VIDA, DAÑO Y CURACIÓN ---
 
 void Personaje::recibirDanio(int danio) {
     if (danio < 0) danio = 0;
+
     vida -= danio;
+
     if (vida <= 0) {
         vida = 0;
         vivo = false;
-        cout << "   [X] " << nombre << " ha sido derrotado!" << endl;
+        cout << "   [X] " << nombre << " ha sido derrotado." << endl;
     }
 }
 
 void Personaje::curar(int cantidad) {
     if (!vivo) return;
+
     vida += cantidad;
     if (vida > vidaMaxima) vida = vidaMaxima;
+
     cout << "   [+] " << nombre << " recupera " << cantidad << " HP." << endl;
 }
 
@@ -99,18 +106,23 @@ bool Personaje::estaVivo() const {
     return vivo && vida > 0;
 }
 
+// --- INVENTARIO Y OBJETOS ---
+
 bool Personaje::agregarObjeto(ObjetoMagico* objeto) {
     if (objetosEquipados.size() >= 2) {
-        cout << "   [!] Inventario lleno (Max 2)." << endl;
+        cout << "   [!] Inventario lleno (máx. 2 objetos)." << endl;
         return false;
     }
+
     objetosEquipados.push_back(objeto);
     cout << "   [OK] " << objeto->getNombre() << " equipado." << endl;
     return true;
 }
 
 bool Personaje::usarObjeto(int indice) {
-    if (indice < 0 || indice >= objetosEquipados.size()) return false;
+    if (indice < 0 || indice >= static_cast<int>(objetosEquipados.size()))
+        return false;
+
     ObjetoMagico* objeto = objetosEquipados[indice];
 
     if (objeto->fueUsado()) {
@@ -123,39 +135,55 @@ bool Personaje::usarObjeto(int indice) {
     return true;
 }
 
-void Personaje::aplicarEfecto(string tipo, int valor, int duracion) {
-    Efecto nuevo = {tipo, valor, duracion};
+// --- EFECTOS (BUFFS / DEBUFFS) ---
+
+void Personaje::aplicarEfecto(std::string tipo, int valor, int duracion) {
+    Efecto nuevo = { tipo, valor, duracion };
     efectosActivos.push_back(nuevo);
 
     if (tipo == "ataque") {
         ataque += valor;
-        cout << "   [BUFF] Ataque sube a " << ataque << " por " << duracion << " turnos." << endl;
+        cout << "   [BUFF] Ataque sube a " << ataque
+             << " por " << duracion << " turnos." << endl;
     } else if (tipo == "defensa") {
         defensa += valor;
-        cout << "   [BUFF] Defensa sube a " << defensa << " por " << duracion << " turnos." << endl;
+        cout << "   [BUFF] Defensa sube a " << defensa
+             << " por " << duracion << " turnos." << endl;
     }
 }
 
 void Personaje::actualizarEfectos() {
-    for (int i = efectosActivos.size() - 1; i >= 0; i--) {
+    for (int i = static_cast<int>(efectosActivos.size()) - 1; i >= 0; --i) {
         efectosActivos[i].turnosRestantes--;
-        if (efectosActivos[i].turnosRestantes <= 0) {
-            if (efectosActivos[i].tipo == "ataque") ataque -= efectosActivos[i].valor;
-            else if (efectosActivos[i].tipo == "defensa") defensa -= efectosActivos[i].valor;
 
-            cout << "   [INFO] El efecto de " << efectosActivos[i].tipo << " termino." << endl;
+        if (efectosActivos[i].turnosRestantes <= 0) {
+
+            if (efectosActivos[i].tipo == "ataque") {
+                ataque -= efectosActivos[i].valor;
+            } else if (efectosActivos[i].tipo == "defensa") {
+                defensa -= efectosActivos[i].valor;
+            }
+
+            cout << "   [INFO] El efecto de "
+                 << efectosActivos[i].tipo << " terminó." << endl;
+
             efectosActivos.erase(efectosActivos.begin() + i);
         }
     }
 }
 
+// --- STATUS DEL PERSONAJE ---
+
 void Personaje::mostrarEstado() const {
     cout << "--------------------------------" << endl;
-    cout << nombre << " (" << rol << ") NVL " << nivel << endl;
-    cout << "HP: " << vida << "/" << vidaMaxima << " | XP: " << experiencia << "/" << experienciaNecesaria << endl;
+    cout << nombre << " (" << rol << ")  NVL " << nivel << endl;
+    cout << "HP: " << vida << "/" << vidaMaxima << endl;
+    cout << "XP: " << experiencia << "/" << experienciaNecesaria << endl;
     cout << "ATK: " << ataque << " | DEF: " << defensa << endl;
     cout << "--------------------------------" << endl;
 }
+
+// --- CÁLCULOS DE DAÑO ---
 
 int Personaje::calcularDanioBase(Personaje* objetivo) {
     int danio = ataque - objetivo->getDefensa();
@@ -166,6 +194,9 @@ int Personaje::calcularDanioBase(Personaje* objetivo) {
 int Personaje::aplicarVariacionAleatoria(int valor, int porcentaje) {
     int variacion = (valor * porcentaje) / 100;
     if (variacion == 0) return valor;
-    int ajuste = (rand() % (variacion * 2 + 1)) - variacion;
+
+    int rango = variacion * 2 + 1;
+    int ajuste = (std::rand() % rango) - variacion;
+
     return valor + ajuste;
 }
