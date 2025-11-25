@@ -158,5 +158,6 @@ void Arena::prepararCombate() {
 
     cout << "\n[OK] Todo listo. Presiona ENTER para empezar la batalla...";
     cin.get();
+
 }
 
