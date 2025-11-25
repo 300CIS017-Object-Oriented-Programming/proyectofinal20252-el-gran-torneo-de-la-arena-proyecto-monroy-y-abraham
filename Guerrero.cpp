@@ -7,11 +7,7 @@
 #include <limits>
 #include <cstdlib>
 
-using std::cout;
-using std::endl;
-using std::cin;
-using std::vector;
-using std::string;
+using namespace std;
 
 Guerrero::Guerrero(string nombre, int nivel)
     : Personaje(nombre, nivel,
