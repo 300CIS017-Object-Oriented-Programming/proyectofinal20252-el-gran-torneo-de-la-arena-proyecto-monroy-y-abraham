@@ -189,11 +189,11 @@ void Guild::tiendaHeroes() {
         cout << " Tus Monedas: " << monedas << endl;
         cout << "-------------------------------------------------" << endl;
         cout << " CLASES DISPONIBLES:" << endl;
-        cout << " 1. Guerrero [Tanque/Daño]   - Costo: 100 Monedas" << endl;
-        cout << " 2. Mago     [Daño Magico]   - Costo: 120 Monedas" << endl;
+        cout << " 1. Guerrero [Tanque/Danio]   - Costo: 100 Monedas" << endl;
+        cout << " 2. Mago     [Danio Magico]   - Costo: 120 Monedas" << endl;
         cout << " 3. Sanador  [Soporte/Cura]  - Costo: 80  Monedas" << endl;
         cout << " 4. Paladin  [Tanque Puro]   - Costo: 110 Monedas" << endl;
-        cout << " 5. Arquero  [Daño Rapido]   - Costo: 90  Monedas" << endl;
+        cout << " 5. Arquero  [Danio Rapido]   - Costo: 90  Monedas" << endl;
         cout << " 0. Volver al menu principal" << endl;
         cout << "=================================================" << endl;
         cout << "Seleccione a quien desea contratar: ";
