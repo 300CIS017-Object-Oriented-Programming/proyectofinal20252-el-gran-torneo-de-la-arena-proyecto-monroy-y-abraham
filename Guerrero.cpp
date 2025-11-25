@@ -1,51 +1,61 @@
 //
 // Created by Jesus Esteban Monroy on 21/11/2025.
 //
+
 #include "Guerrero.h"
 #include <iostream>
 #include <limits>
-#include "ObjetoMagico.h"
+#include <cstdlib>
 
 using std::cout;
 using std::endl;
-
+using std::cin;
+using std::vector;
+using std::string;
 
 Guerrero::Guerrero(string nombre, int nivel)
-    : Personaje(nombre, nivel, 120 + (nivel * 10), 25 + (nivel * 2), 18 + nivel, "Guerrero") {
-    this->probabilidadCritico = 0.20f;
-    this->multiplicadorCritico = 1.8f;
+    : Personaje(nombre, nivel,
+                120 + (nivel * 10),   // vida
+                25 + (nivel * 2),     // ataque
+                18 + nivel,           // defensa
+                "Guerrero") {
 
-    // Furia empieza en 0 (Calmado)
-    this->furia = 0;
-    this->furiaMaxima = 100;
+    probabilidadCritico = 0.20f;
+    multiplicadorCritico = 1.8f;
+
+    furiaMaxima = 100;
+    furia = 0;
 }
 
 Guerrero::~Guerrero() {}
 
 void Guerrero::generarFuria(int cantidad) {
     furia += cantidad;
-    if (furia > furiaMaxima) furia = furiaMaxima;
-    cout << "   [FURIA] " << nombre << " genera " << cantidad << " de Furia." << endl;
+    if (furia > furiaMaxima) {
+        furia = furiaMaxima;
+    }
+    cout << "   [FURIA] " << nombre
+         << " gana " << cantidad << " de furia.\n";
 }
 
 int Guerrero::atacar(Personaje* objetivo) {
     if (!objetivo || !objetivo->estaVivo()) return 0;
 
-    cout << "   [ATK] " << nombre << " lanza un tajo con su espada." << endl;
+    cout << "   [ATK] " << nombre << " ataca con su espada.\n";
 
     int danio = calcularDanioBase(objetivo);
 
     if (intentarGolpeCritico()) {
-        danio = static_cast<int>(danio * multiplicadorCritico);
-        cout << "   [CRITICO] ¡Impacto brutal!" << endl;
-        // Critico genera mas furia
-        generarFuria(10);
+        // 1.8x el daño usando solo enteros (aprox)
+        danio = danio * 18 / 10;
+        cout << "   [CRITICO] ¡Golpe crítico!\n";
+        generarFuria(10);   // extra furia por crítico
     }
 
-    cout << "   [DANIO] " << danio << " puntos." << endl;
+    cout << "   [DANIO] " << danio << " puntos.\n";
     objetivo->recibirDanio(danio);
 
-    // Ataque normal genera furia
+    // Ataque normal genera furia base
     generarFuria(20);
 
     return danio;
@@ -56,61 +66,73 @@ bool Guerrero::intentarGolpeCritico() {
     return chance < probabilidadCritico;
 }
 
-// interaccion
-void Guerrero::realizarAccion(vector<Personaje*>& aliados, vector<Personaje*>& enemigos) {
+void Guerrero::realizarAccion(vector<Personaje*>& aliados,
+                              vector<Personaje*>& enemigos) {
     if (!estaVivo()) return;
 
-    cout << "\n-- Turno de " << nombre << " (Guerrero) --" << endl;
-    // Barra de Furia
-    cout << "Furia: " << furia << "/" << furiaMaxima << " [";
-    for(int i=0; i<10; i++) cout << (i < furia/10 ? "X" : " ");
-    cout << "]" << endl;
+    cout << "\n-- Turno de " << nombre << " (Guerrero) --\n";
+    cout << "Vida: " << vida << "\n";
+    cout << "Furia: " << furia << "/" << furiaMaxima << "\n\n";
 
-    cout << "1. Ataque Basico (Genera +20 Furia)" << endl;
-
-    if (furia >= 50) {
-        cout << "2. EJECUCION (Gasta 50 Furia - Daño Masivo)" << endl;
-    } else {
-        cout << "2. [Falta Furia] Ejecucion (Necesitas 50)" << endl;
-    }
-
-    cout << "3. Usar Objeto" << endl;
-    cout << "Elige: ";
+    cout << "1. Ataque básico (+20 furia)\n";
+    cout << "2. Ejecución (requiere 50 de furia)\n";
+    cout << "3. Usar objeto\n";
+    cout << "Elige opcion: ";
 
     int opcion;
     cin >> opcion;
-    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
     Personaje* objetivo = nullptr;
 
-    if (opcion == 1 || (opcion == 2 && furia >= 50)) {
-        cout << "\n--- SELECCIONA ENEMIGO ---" << endl;
-        for (int i = 0; i < enemigos.size(); i++) {
+    // Si va a atacar, pedimos enemigo
+    if ((opcion == 1 || opcion == 2) && !enemigos.empty()) {
+        cout << "\n--- Selecciona enemigo ---\n";
+        for (int i = 0; i < (int)enemigos.size(); ++i) {
             cout << " " << i + 1 << ". " << enemigos[i]->getNombre()
-                 << " [Vida: " << enemigos[i]->getVida() << "]" << endl;
+                 << " (Vida: " << enemigos[i]->getVida() << ")\n";
         }
         cout << "Numero: ";
-        int idx; cin >> idx; cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        int idx;
+        cin >> idx;
+        cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
-        if (idx > 0 && idx <= enemigos.size()) objetivo = enemigos[idx - 1];
-        else objetivo = enemigos[0];
+        if (idx >= 1 && idx <= (int)enemigos.size()) {
+            objetivo = enemigos[idx - 1];
+        } else {
+            objetivo = enemigos[0];
+        }
     }
 
-    if (opcion == 1) {
-        atacar(objetivo);
-    } else if (opcion == 2) {
-        if (furia >= 50) {
-            furia -= 50;
-            cout << " ¡" << nombre << " libera su ira en un golpe final!" << endl;
-            int danio = (ataque * 2) + 20; // Daño muy alto
-            cout << "   [EJECUCION] " << danio << " puntos de daño!!" << endl;
-            objetivo->recibirDanio(danio);
-        } else {
-            cout << "No tienes suficiente furia. Atacas normal." << endl;
+    switch (opcion) {
+        case 1:
             atacar(objetivo);
-        }
-    } else if (opcion == 3) {
-        if (!objetosEquipados.empty()) usarObjeto(0);
-        else cout << "Sin objetos." << endl;
+            break;
+
+        case 2:
+            if (furia < 50) {
+                cout << "   [INFO] No tienes suficiente furia, haces un ataque básico.\n";
+                atacar(objetivo);
+            } else {
+                furia -= 50;
+                cout << "   [EJECUCION] " << nombre
+                     << " desata un golpe devastador.\n";
+                int danio = ataque * 2 + 20;
+                cout << "   [DANIO] " << danio << " puntos.\n";
+                objetivo->recibirDanio(danio);
+            }
+            break;
+
+        case 3:
+            if (!objetosEquipados.empty()) {
+                usarObjeto(0);   // de momento siempre el primero
+            } else {
+                cout << "   [INFO] No tienes objetos equipados.\n";
+            }
+            break;
+
+        default:
+            cout << "   [INFO] Opcion no valida, el guerrero pierde el turno.\n";
+            break;
     }
 }
