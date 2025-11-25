@@ -25,7 +25,7 @@ ObjetoGenerico::~ObjetoGenerico() {
 void ObjetoGenerico::usar(Personaje* objetivo) {
     if (!objetivo || !objetivo->estaVivo()) {
         cout << " No se puede usar en este objetivo" << endl;
-        return;
+        return ;
     }
 
     // Calcular valor aleatorio en el rango

@@ -5,18 +5,26 @@
 #include "Sanador.h"
 #include <iostream>
 #include <limits>
+#include <cstdlib>
 
-using namespace std;
+using std::cout;
+using std::endl;
+using std::cin;
+using std::vector;
 
 Sanador::Sanador(string nombre, int nivel)
-    : Personaje(nombre, nivel, 90 + (nivel * 9), 12 + nivel, 15 + nivel, "Sanador") {
-    this->curacionBase = 25 + (nivel * 3);
-    this->efectividadMin = 0.70f;
-    this->efectividadMax = 1.2f;
+    : Personaje(nombre, nivel,
+                90 + nivel * 9,
+                12 + nivel,
+                15 + nivel,
+                "Sanador") {
 
-    // Mana
-    this->manaMaximo = 100;
-    this->mana = 100;
+    curacionBase = 25 + nivel * 3;
+    efectividadMin = 70;
+    efectividadMax = 120;
+
+    manaMaximo = 100;
+    mana = manaMaximo;
 }
 
 Sanador::~Sanador() {}
@@ -24,18 +32,18 @@ Sanador::~Sanador() {}
 int Sanador::atacar(Personaje* objetivo) {
     if (!objetivo || !objetivo->estaVivo()) return 0;
 
-    cout << "   [ATK] " << nombre << " golpea para robar esencia." << endl;
+    cout << "   [ATK] " << nombre << " roba esencia.\n";
+
     int danio = calcularDanioBase(objetivo) / 2;
     if (danio < 5) danio = 5;
 
-    cout << "   [DANIO] " << danio << " puntos." << endl;
+    cout << "   [DANO] " << danio << " puntos.\n";
     objetivo->recibirDanio(danio);
 
-    // Recupera Mana al atacar
-    int rec = 20;
-    mana += rec;
+    mana += 20;
     if (mana > manaMaximo) mana = manaMaximo;
-    cout << "   [MANA] Recuperas " << rec << " de Mana." << endl;
+
+    cout << "   [MANA] Recuperas 20.\n";
 
     return danio;
 }
@@ -43,70 +51,99 @@ int Sanador::atacar(Personaje* objetivo) {
 int Sanador::curarAliado(Personaje* aliado) {
     if (!aliado || !aliado->estaVivo()) return 0;
 
-    float efectividad = calcularEfectividad();
-    int cantidad = static_cast<int>(curacionBase * efectividad);
+    int porc = efectividadMin + (rand() % (efectividadMax - efectividadMin + 1));
+    int cantidad = curacionBase * porc / 100;
 
-    cout << "   [HEAL] " << nombre << " sana a " << aliado->getNombre() << endl;
+    cout << "   [CURACION] " << nombre << " cura a " << aliado->getNombre()
+         << " por " << cantidad << ".\n";
+
     aliado->curar(cantidad);
-
     return cantidad;
 }
 
-float Sanador::calcularEfectividad() {
-    float rango = efectividadMax - efectividadMin;
-    float random = static_cast<float>(rand() % 100) / 100.0f;
-    return efectividadMin + (rango * random);
-}
-
-// --- INTERACCION ---
-void Sanador::realizarAccion(vector<Personaje*>& aliados, vector<Personaje*>& enemigos) {
+void Sanador::realizarAccion(vector<Personaje*>& aliados,
+                             vector<Personaje*>& enemigos) {
     if (!estaVivo()) return;
 
-    cout << "\n-- Turno de " << nombre << " (Sanador) --" << endl;
-    // Barra de Mana
-    cout << "Mana: " << mana << "/" << manaMaximo << " [";
-    for(int i=0; i<10; i++) cout << (i < mana/10 ? "+" : " ");
-    cout << "]" << endl;
+    cout << "\n-- Turno de " << nombre << " (Sanador) --\n";
+    cout << "Vida: " << vida << "\n";
+    cout << "Mana: " << mana << "/" << manaMaximo << "\n\n";
 
-    cout << "1. Ataque Drenante (Recupera 20 Mana)" << endl;
-
-    if (mana >= 30) cout << "2. Curar Aliado (Gasta 30 Mana)" << endl;
-    else cout << "2. [Sin Mana] Curar Aliado" << endl;
-
-    cout << "3. Usar Objeto" << endl;
-    cout << "Elige: ";
+    cout << "1. Ataque drenante (+20 mana)\n";
+    cout << "2. Curar aliado (30 mana)\n";
+    cout << "3. Usar objeto\n";
+    cout << "Elige opcion: ";
 
     int opcion;
     cin >> opcion;
-    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
-    if (opcion == 1) {
-        cout << "\n--- ATACAR A QUIEN? ---" << endl;
-        for (int i = 0; i < enemigos.size(); i++) {
-            cout << " " << i + 1 << ". " << enemigos[i]->getNombre()
-                 << " [Vida: " << enemigos[i]->getVida() << "]" << endl;
+    switch (opcion) {
+
+        // -------------------------
+        // ATAQUE
+        // -------------------------
+        case 1: {
+            cout << "\n--- Selecciona enemigo ---\n";
+
+            for (int i = 0; i < (int)enemigos.size(); i++) {
+                cout << i + 1 << ". " << enemigos[i]->getNombre()
+                     << " (Vida: " << enemigos[i]->getVida() << ")\n";
+            }
+
+            int idx;
+            cout << "Num: ";
+            cin >> idx;
+            cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+
+            if (idx < 1 || idx > (int)enemigos.size()) idx = 1;
+
+            atacar(enemigos[idx - 1]);
+            break;
         }
-        int idx; cout << "Num: "; cin >> idx; cin.ignore(numeric_limits<streamsize>::max(), '\n');
 
-        Personaje* obj = (idx > 0 && idx <= enemigos.size()) ? enemigos[idx-1] : enemigos[0];
-        atacar(obj);
+        // -------------------------
+        // CURA
+        // -------------------------
+        case 2: {
+            if (mana < 30) {
+                cout << "   [INFO] No tienes mana.\n";
+                break;
+            }
 
-    } else if (opcion == 2 && mana >= 30) {
-        cout << "\n--- CURAR A QUIEN? ---" << endl;
-        for (int i = 0; i < aliados.size(); i++) {
-            cout << " " << i + 1 << ". " << aliados[i]->getNombre()
-                 << " [HP: " << aliados[i]->getVida() << "/" << aliados[i]->getVidaMaxima() << "]" << endl;
+            cout << "\n--- Selecciona aliado ---\n";
+
+            for (int i = 0; i < (int)aliados.size(); i++) {
+                cout << i + 1 << ". " << aliados[i]->getNombre()
+                     << " (HP: " << aliados[i]->getVida()
+                     << "/" << aliados[i]->getVidaMaxima() << ")\n";
+            }
+
+            int idx;
+            cout << "Num: ";
+            cin >> idx;
+            cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+
+            mana -= 30;
+
+            if (idx < 1 || idx > (int)aliados.size())
+                curarAliado(this);
+            else
+                curarAliado(aliados[idx - 1]);
+
+            break;
         }
-        int idx; cout << "Num: "; cin >> idx; cin.ignore(numeric_limits<streamsize>::max(), '\n');
 
-        mana -= 30; // Gasto
-        if (idx > 0 && idx <= aliados.size()) curarAliado(aliados[idx - 1]);
-        else curarAliado(this);
+        // -------------------------
+        // OBJETOS
+        // -------------------------
+        case 3:
+            if (!objetosEquipados.empty()) usarObjeto(0);
+            else cout << "   [INFO] No tienes objetos.\n";
+            break;
 
-    } else if (opcion == 3) {
-        if (!objetosEquipados.empty()) usarObjeto(0);
-        else cout << "Sin objetos." << endl;
-    } else {
-        cout << "Opcion no valida o falta mana." << endl;
+        default:
+            cout << "   [INFO] Opcion no valida.\n";
+            break;
     }
 }
