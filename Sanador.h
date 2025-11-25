@@ -9,8 +9,8 @@
 class Sanador : public Personaje {
 private:
     int curacionBase;
-    float efectividadMin;
-    float efectividadMax;
+    int efectividadMin;
+    int efectividadMax;
 
     // RECURSO: MANA
     int mana;

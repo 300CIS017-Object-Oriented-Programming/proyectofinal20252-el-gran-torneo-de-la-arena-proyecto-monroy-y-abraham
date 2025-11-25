@@ -6,6 +6,10 @@
 #include <iostream>
 #include <limits>
 #include <cstdlib>
+<<<<<<< HEAD
+=======
+#include <vector>   // <-- FALTABA ESTA LINEA
+>>>>>>> ee244241761207062c3d2b4bae5a78be1342c044
 
 using std::cout;
 using std::endl;
@@ -14,12 +18,23 @@ using std::vector;
 
 Sanador::Sanador(string nombre, int nivel)
     : Personaje(nombre, nivel,
+<<<<<<< HEAD
                 90 + nivel * 9,
                 12 + nivel,
                 15 + nivel,
                 "Sanador") {
 
     curacionBase = 25 + nivel * 3;
+=======
+                90 + nivel * 9,   // vida
+                12 + nivel,       // ataque
+                15 + nivel,       // defensa
+                "Sanador") {
+
+    curacionBase = 25 + nivel * 3;
+
+    // Efectividad entre 70% y 120%, pero lo dejamos en enteros
+>>>>>>> ee244241761207062c3d2b4bae5a78be1342c044
     efectividadMin = 70;
     efectividadMax = 120;
 
@@ -32,7 +47,11 @@ Sanador::~Sanador() {}
 int Sanador::atacar(Personaje* objetivo) {
     if (!objetivo || !objetivo->estaVivo()) return 0;
 
+<<<<<<< HEAD
     cout << "   [ATK] " << nombre << " roba esencia.\n";
+=======
+    cout << "   [ATK] " << nombre << " roba esencia con un golpe.\n";
+>>>>>>> ee244241761207062c3d2b4bae5a78be1342c044
 
     int danio = calcularDanioBase(objetivo) / 2;
     if (danio < 5) danio = 5;
@@ -43,7 +62,11 @@ int Sanador::atacar(Personaje* objetivo) {
     mana += 20;
     if (mana > manaMaximo) mana = manaMaximo;
 
+<<<<<<< HEAD
     cout << "   [MANA] Recuperas 20.\n";
+=======
+    cout << "   [MANA] Recuperas 20 de mana.\n";
+>>>>>>> ee244241761207062c3d2b4bae5a78be1342c044
 
     return danio;
 }
@@ -55,7 +78,11 @@ int Sanador::curarAliado(Personaje* aliado) {
     int cantidad = curacionBase * porc / 100;
 
     cout << "   [CURACION] " << nombre << " cura a " << aliado->getNombre()
+<<<<<<< HEAD
          << " por " << cantidad << ".\n";
+=======
+         << " por " << cantidad << " puntos.\n";
+>>>>>>> ee244241761207062c3d2b4bae5a78be1342c044
 
     aliado->curar(cantidad);
     return cantidad;
@@ -85,7 +112,10 @@ void Sanador::realizarAccion(vector<Personaje*>& aliados,
         // -------------------------
         case 1: {
             cout << "\n--- Selecciona enemigo ---\n";
+<<<<<<< HEAD
 
+=======
+>>>>>>> ee244241761207062c3d2b4bae5a78be1342c044
             for (int i = 0; i < (int)enemigos.size(); i++) {
                 cout << i + 1 << ". " << enemigos[i]->getNombre()
                      << " (Vida: " << enemigos[i]->getVida() << ")\n";
@@ -97,22 +127,36 @@ void Sanador::realizarAccion(vector<Personaje*>& aliados,
             cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
             if (idx < 1 || idx > (int)enemigos.size()) idx = 1;
+<<<<<<< HEAD
 
+=======
+>>>>>>> ee244241761207062c3d2b4bae5a78be1342c044
             atacar(enemigos[idx - 1]);
             break;
         }
 
         // -------------------------
+<<<<<<< HEAD
         // CURA
         // -------------------------
         case 2: {
             if (mana < 30) {
                 cout << "   [INFO] No tienes mana.\n";
+=======
+        // CURAR ALIADO
+        // -------------------------
+        case 2: {
+            if (mana < 30) {
+                cout << "   [INFO] No tienes mana suficiente.\n";
+>>>>>>> ee244241761207062c3d2b4bae5a78be1342c044
                 break;
             }
 
             cout << "\n--- Selecciona aliado ---\n";
+<<<<<<< HEAD
 
+=======
+>>>>>>> ee244241761207062c3d2b4bae5a78be1342c044
             for (int i = 0; i < (int)aliados.size(); i++) {
                 cout << i + 1 << ". " << aliados[i]->getNombre()
                      << " (HP: " << aliados[i]->getVida()
