@@ -3,136 +3,171 @@
 //
 
 #include "Arquero.h"
-#include "Arquero.h"
 #include <iostream>
 #include <limits>
-#include "ObjetoMagico.h"
+#include <cstdlib>     // rand
 
 using std::cout;
 using std::endl;
-
+using std::cin;
+using std::vector;
+using std::string;
 
 Arquero::Arquero(string nombre, int nivel)
-    : Personaje(nombre, nivel, 80 + (nivel * 8), 28 + (nivel * 3), 10 + nivel, "Arquero") {
-    this->precision = 0.85f;
-    this->flechasEspeciales = 5;
+    : Personaje(nombre, nivel,
+                80 + (nivel * 8),     // vida
+                28 + (nivel * 3),     // ataque
+                10 + nivel,           // defensa
+                "Arquero") {
 
-    // Sistema de Cansancio
-    this->estaminaMaxima = 100;
-    this->estamina = 100; // Empieza fresco
+    precision = 0.85f;
+    flechasEspeciales = 5;
+
+    estaminaMaxima = 100;
+    estamina = estaminaMaxima;
 }
 
 Arquero::~Arquero() {}
 
+// Recupera estamina
 void Arquero::descansar() {
     int recuperacion = 50;
     estamina += recuperacion;
-    if (estamina > estaminaMaxima) estamina = estaminaMaxima;
-    cout << "   [REPOSO] " << nombre << " toma un respiro y recupera " << recuperacion << " de estamina." << endl;
+    if (estamina > estaminaMaxima) {
+        estamina = estaminaMaxima;
+    }
+    cout << "   [REPOSO] " << nombre
+         << " descansa y recupera " << recuperacion << " de estamina.\n";
 }
 
+// Ataque básico
 int Arquero::atacar(Personaje* objetivo) {
     if (!objetivo || !objetivo->estaVivo()) return 0;
     return dispararFlecha(objetivo);
 }
 
+// Disparo normal
 int Arquero::dispararFlecha(Personaje* objetivo) {
-    cout << "   [ATK] " << nombre << " tensa el arco y dispara." << endl;
+    cout << "   [ATK] " << nombre << " dispara una flecha.\n";
 
     if (!verificarPrecision()) {
-        cout << "   [FALLO] La flecha paso de largo." << endl;
-        // Aun fallando se cansa un poco
+        cout << "   [FALLO] La flecha fallo.\n";
         estamina -= 5;
         return 0;
     }
 
-    int danio = calcularDanioBase(objetivo);
-    danio = static_cast<int>(danio * 1.1f);
+    int danioBase = calcularDanioBase(objetivo);
+    // Aumentamos 10% el daño de forma sencilla:
+    int danio = danioBase * 11 / 10;  // 10% extra sin usar static_cast
 
-    cout << "   [DANIO] " << danio << " puntos." << endl;
+    cout << "   [DANIO] " << danio << " puntos.\n";
     objetivo->recibirDanio(danio);
 
-    // Gasto de estamina normal
     estamina -= 10;
-
     return danio;
 }
 
+// Flecha especial
 void Arquero::flechaExplosiva(Personaje* objetivo) {
-    if (flechasEspeciales <= 0) return;
+    if (flechasEspeciales <= 0) {
+        cout << "   [INFO] No te quedan flechas explosivas.\n";
+        return;
+    }
+    if (!objetivo || !objetivo->estaVivo()) return;
 
-    cout << "   [BOOM] ¡Flecha Explosiva lanzada!" << endl;
-    int danio = calcularDanioBase(objetivo) * 1.5;
-    cout << "   [DANIO] " << danio << " puntos de daño explosivo." << endl;
+    cout << "   [BOOM] ¡Flecha Explosiva!\n";
+
+    int danioBase = calcularDanioBase(objetivo);
+    int danio = danioBase * 3 / 2;  // 1.5x daño, versión simple entera
+
+    cout << "   [DANIO] " << danio
+         << " puntos de daño explosivo.\n";
     objetivo->recibirDanio(danio);
 
     flechasEspeciales--;
-    // Gasto fuerte de estamina
     estamina -= 40;
 }
 
+// ¿La flecha acierta?
 bool Arquero::verificarPrecision() {
     float chance = static_cast<float>(rand() % 100) / 100.0f;
     return chance < precision;
 }
 
-// Logica interactiva incluyendo la estamina del personaje
-void Arquero::realizarAccion(vector<Personaje*>& aliados, vector<Personaje*>& enemigos) {
+// Menú de acciones, versión simplificada
+void Arquero::realizarAccion(vector<Personaje*>& aliados,
+                             vector<Personaje*>& enemigos) {
     if (!estaVivo()) return;
 
-    cout << "\n-- Turno de " << nombre << " (Arquero) --" << endl;
-    // Barra de Estamina
-    cout << "Estamina: " << estamina << "/" << estaminaMaxima << " [";
-    for(int i=0; i<10; i++) cout << (i < estamina/10 ? "=" : " ");
-    cout << "]" << endl;
-    cout << "Flechas Especiales: " << flechasEspeciales << endl;
+    cout << "\n-- Turno de " << nombre << " (Arquero) --\n";
+    cout << "Vida: " << vida << "\n";
+    cout << "Estamina: " << estamina << "/" << estaminaMaxima << "\n";
+    cout << "Flechas especiales: " << flechasEspeciales << "\n\n";
 
-    // Opciones condicionadas por la estamina
-    if (estamina >= 10) cout << "1. Disparar Flecha (Gasta 10 Estamina)" << endl;
-    else cout << "1. [Cansado] Disparar Flecha (Necesitas 10)" << endl;
-
-    if (estamina >= 40 && flechasEspeciales > 0) cout << "2. Flecha Explosiva (Gasta 40 Estamina)" << endl;
-    else if (flechasEspeciales == 0) cout << "2. [Sin municion] Flecha Explosiva" << endl;
-    else cout << "2. [Cansado] Flecha Explosiva (Necesitas 40)" << endl;
-
-    cout << "3. Descansar (Recuperar 50 Estamina)" << endl;
-    cout << "4. Usar Objeto" << endl;
-    cout << "Elige: ";
+    cout << "1. Disparar flecha (10 estamina)\n";
+    cout << "2. Flecha explosiva (40 estamina, usa flecha especial)\n";
+    cout << "3. Descansar (+50 estamina)\n";
+    cout << "4. Usar objeto\n";
+    cout << "Elige opcion: ";
 
     int opcion;
     cin >> opcion;
-    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
     Personaje* objetivo = nullptr;
 
-    // Seleccion de objetivo si va a atacar
-    if ((opcion == 1 && estamina >= 10) || (opcion == 2 && estamina >= 40 && flechasEspeciales > 0)) {
-        cout << "\n--- BLANCO ---" << endl;
-        for (int i = 0; i < enemigos.size(); i++) {
+    // Solo pedimos objetivo si es una acción ofensiva
+    if ((opcion == 1 || opcion == 2) && !enemigos.empty()) {
+        cout << "\n--- Selecciona enemigo ---\n";
+        for (int i = 0; i < (int)enemigos.size(); ++i) {
             cout << " " << i + 1 << ". " << enemigos[i]->getNombre()
-                 << " [Vida: " << enemigos[i]->getVida() << "]" << endl;
+                 << " (Vida: " << enemigos[i]->getVida() << ")\n";
         }
         cout << "Numero: ";
-        int idx; cin >> idx; cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        int idx;
+        cin >> idx;
+        cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
-        if (idx > 0 && idx <= enemigos.size()) objetivo = enemigos[idx - 1];
-        else objetivo = enemigos[0];
+        if (idx >= 1 && idx <= (int)enemigos.size()) {
+            objetivo = enemigos[idx - 1];
+        } else {
+            objetivo = enemigos[0]; // por defecto el primero
+        }
     }
 
-    if (opcion == 1) {
-        if (estamina >= 10) dispararFlecha(objetivo);
-        else cout << "Estas muy cansado para tensar el arco. Debes descansar." << endl;
-    }
-    else if (opcion == 2) {
-        if (estamina >= 40 && flechasEspeciales > 0) flechaExplosiva(objetivo);
-        else if (flechasEspeciales <= 0) cout << "No te quedan flechas explosivas." << endl;
-        else cout << "Estas muy cansado para la tecnica especial." << endl;
-    }
-    else if (opcion == 3) {
-        descansar();
-    }
-    else if (opcion == 4) {
-        if (!objetosEquipados.empty()) usarObjeto(0);
-        else cout << "Sin objetos." << endl;
+    switch (opcion) {
+        case 1:
+            if (estamina >= 10) {
+                dispararFlecha(objetivo);
+            } else {
+                cout << "   [INFO] No tienes suficiente estamina para atacar.\n";
+            }
+            break;
+
+        case 2:
+            if (estamina < 40) {
+                cout << "   [INFO] No tienes suficiente estamina para la flecha explosiva.\n";
+            } else if (flechasEspeciales <= 0) {
+                cout << "   [INFO] No te quedan flechas explosivas.\n";
+            } else {
+                flechaExplosiva(objetivo);
+            }
+            break;
+
+        case 3:
+            descansar();
+            break;
+
+        case 4:
+            if (!objetosEquipados.empty()) {
+                usarObjeto(0); // por ahora usamos siempre el primero
+            } else {
+                cout << "   [INFO] No tienes objetos equipados.\n";
+            }
+            break;
+
+        default:
+            cout << "   [INFO] Opcion no valida, el arquero pierde el turno.\n";
+            break;
     }
 }
