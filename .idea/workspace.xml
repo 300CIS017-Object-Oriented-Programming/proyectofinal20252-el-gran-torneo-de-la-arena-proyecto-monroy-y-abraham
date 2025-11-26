@@ -29,10 +29,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="842200ea-c21e-4993-ae66-996878d84a78" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/PersistenciaJSON.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/PersistenciaJSON.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Personaje.h" beforeDir="false" afterPath="$PROJECT_DIR$/Personaje.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -103,7 +100,7 @@
       <option name="presentableId" value="Default" />
       <updated>1764134300635</updated>
       <workItem from="1764134302334" duration="2510000" />
-      <workItem from="1764178174424" duration="3615000" />
+      <workItem from="1764178174424" duration="9719000" />
     </task>
     <servers />
   </component>
