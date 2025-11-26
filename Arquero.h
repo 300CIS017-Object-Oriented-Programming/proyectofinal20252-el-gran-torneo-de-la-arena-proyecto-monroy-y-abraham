@@ -27,7 +27,7 @@ private:
     void flechaExplosiva(Personaje* objetivo);
     bool verificarPrecision();
 
-    // Accion para recuperar aire
+    // Accion para recuperar aura
     void descansar();
 };
 
