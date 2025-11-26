@@ -4,7 +4,8 @@
 
 #ifndef PROYECTOFINAL20252_EL_GRAN_TORNEO_DE_LA_ARENA_PROYECTO_MONROY_Y_ABRAHAM_SANADOR_H
 #define PROYECTOFINAL20252_EL_GRAN_TORNEO_DE_LA_ARENA_PROYECTO_MONROY_Y_ABRAHAM_SANADOR_H
-#incliude "Perosnaje.h"
+
+#include "Personaje.h"
 
 class Sanador : public Personaje {
 private:
@@ -23,8 +24,10 @@ public:
     int atacar(Personaje* objetivo) override;
     void realizarAccion(vector<Personaje*>& aliados, vector<Personaje*>& enemigos) override;
 
-
-
+private:
+    int curarAliado(Personaje* aliado);
+    float calcularEfectividad();
+    // No necesita mas metodos privados complejos
 };
 
 #endif //PROYECTOFINAL20252_EL_GRAN_TORNEO_DE_LA_ARENA_PROYECTO_MONROY_Y_ABRAHAM_SANADOR_H

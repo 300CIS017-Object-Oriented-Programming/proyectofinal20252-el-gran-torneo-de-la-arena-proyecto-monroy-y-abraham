@@ -5,6 +5,9 @@
 #ifndef PROYECTOFINAL20252_EL_GRAN_TORNEO_DE_LA_ARENA_PROYECTO_MONROY_Y_ABRAHAM_OBJETOGENERICO_H
 #define PROYECTOFINAL20252_EL_GRAN_TORNEO_DE_LA_ARENA_PROYECTO_MONROY_Y_ABRAHAM_OBJETOGENERICO_H
 
+#include "ObjetoMagico.h"
+#include "Personaje.h"
+
 class ObjetoGenerico : public ObjetoMagico {
 private:
     string tipoEfecto; // "curacion", "buff_ataque", "buff_defensa", "especial"

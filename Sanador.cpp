@@ -83,8 +83,9 @@ void Sanador::realizarAccion(vector<Personaje*>& aliados,
 
     switch (opcion) {
 
+        // -------------------------
         // ATAQUE
-
+        // -------------------------
         case 1: {
             cout << "\n--- Selecciona enemigo ---\n";
             for (int i = 0; i < (int)enemigos.size(); i++) {
@@ -102,9 +103,9 @@ void Sanador::realizarAccion(vector<Personaje*>& aliados,
             break;
         }
 
-
+        // -------------------------
         // CURAR ALIADO
-
+        // -------------------------
         case 2: {
             if (mana < 30) {
                 cout << "   [INFO] No tienes mana suficiente.\n";
@@ -133,9 +134,9 @@ void Sanador::realizarAccion(vector<Personaje*>& aliados,
             break;
         }
 
-
+        // -------------------------
         // OBJETOS
-
+        // -------------------------
         case 3:
             if (!objetosEquipados.empty()) usarObjeto(0);
             else cout << "   [INFO] No tienes objetos.\n";
