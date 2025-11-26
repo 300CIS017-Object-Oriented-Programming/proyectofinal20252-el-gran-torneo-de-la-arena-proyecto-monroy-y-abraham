@@ -1,0 +1,50 @@
+cmake_minimum_required(VERSION 4.0)
+project(proyectofinal20252_el_gran_torneo_de_la_arena_proyecto_monroy_y_abraham)
+
+set(CMAKE_CXX_STANDARD 20)
+
+add_executable(proyectofinal20252_el_gran_torneo_de_la_arena_proyecto_monroy_y_abraham
+        main.cpp
+        Guerrero.cpp
+        Guerrero.h
+        Mago.cpp
+        Mago.h
+        Sanador.cpp
+        Sanador.h
+        Paladin.cpp
+        Paladin.h
+        personaje.h
+        personaje.cpp
+        Arquero.cpp
+        Arquero.h
+        Oponente.cpp
+        Oponente.h
+        ObjetoMagico.cpp
+        ObjetoMagico.h
+        PocionVida.cpp
+        PocionVida.h
+        AmuletoFuria.cpp
+        AmuletoFuria.h
+        EscudoBendito.cpp
+        EscudoBendito.h
+        TalismanVelocidad.cpp
+        TalismanVelocidad.h
+        CristalMagico.cpp
+        CristalMagico.h
+        TomoConocimiento.cpp
+        TomoConocimiento.h
+        ElixirSombrio.cpp
+        ElixirSombrio.h
+        RunaProtectora.cpp
+        RunaProtectora.h
+        Guild.cpp
+        Guild.h
+        Inventario.cpp
+        Inventario.h
+        Arena.cpp
+        Arena.h
+        ObjetoGenerico.cpp
+        ObjetoGenerico.h
+        PersistenciaJSON.cpp
+        PersistenciaJSON.h
+)
