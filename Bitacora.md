@@ -51,9 +51,9 @@ Curso: Programacion Orientada a Objetos (2025-2B)
 
 ---
 
-# ANALISIS DE PROCESO (RESUMIDO)
+# ANALISIS DE PROCESO 
 
-## Esteban-Monroy
+## Esteban Monroy
 ### Arquitectura de clases
 Hice la clase padre Personaje para evitar codigo repetido y usar polimorfismo.
 
@@ -65,7 +65,7 @@ Habia daño negativo. Con cout identifiqué errores y los corregi.
 
 ---
 
-## abraham21587
+## Abraham Waggon 
 ### Objeto Generico
 Habia demasiados .cpp para cada objeto. Unifique todo en uno y borramos archivos innecesarios.
 
