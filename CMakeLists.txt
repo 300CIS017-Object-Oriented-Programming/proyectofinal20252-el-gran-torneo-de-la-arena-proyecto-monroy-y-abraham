@@ -45,4 +45,6 @@ add_executable(proyectofinal20252_el_gran_torneo_de_la_arena_proyecto_monroy_y_a
         Arena.h
         ObjetoGenerico.cpp
         ObjetoGenerico.h
+        PersistenciaJSON.cpp
+        PersistenciaJSON.h
 )

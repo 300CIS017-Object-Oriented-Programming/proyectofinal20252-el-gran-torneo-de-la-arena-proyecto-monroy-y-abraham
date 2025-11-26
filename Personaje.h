@@ -85,6 +85,13 @@ public:
     void setAtaque(int a) { ataque = a; }
     void setDefensa(int d) { defensa = d; }
 
+    // persisntecia json
+    int getExperiencia() const { return experiencia; }
+    void setExperiencia(int xp) { experiencia = xp; }
+    void setNivel(int n) { nivel = n; }
+
+
+
 protected:
     int calcularDanioBase(Personaje* objetivo);
     int aplicarVariacionAleatoria(int valor, int porcentaje = 10);

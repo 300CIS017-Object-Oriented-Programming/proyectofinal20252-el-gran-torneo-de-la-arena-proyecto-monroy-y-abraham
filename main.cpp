@@ -14,13 +14,14 @@
 #include "Paladin.h"
 #include "Arquero.h"
 #include "ObjetoGenerico.h"
+#include "PersistenciaJSON.h"
 
 
 using namespace std;
 
 // --- FUNCIONES DE UTILIDAD (PARA QUE NO FALLE EL MENU) ---
 
-// Funcion para limpiar la pantalla "a la fuerza" (imprimiendo lineas vacias)
+
 // Esto arregla el error visual de que el menu salga incompleto.
 void limpiarPantalla() {
     // Imprimimos 50 saltos de linea para limpiar
@@ -33,9 +34,7 @@ void pausa() {
     cin.get();
 }
 
-// ESTA FUNCION ES LA SOLUCION AL ERROR:
-// Lee un numero de forma segura. Si das Enter vacio, espera.
-// Si escribes letras, devuelve -1 para que no se rompa.
+
 int leerEntero() {
     string entrada;
     while (true) {
@@ -212,13 +211,17 @@ int main() {
                 pausa();
                 break;
 
-
+            case 8:
+                limpiarPantalla();
+                cout << "Cargando partida..." << endl;
+                GestorArchivos::cargarPartida(miGuild, miInventario);
+                pausa();
+                break;
 
             case 9:
                 salirDelJuego = true;
                 cout << "Saliendo..." << endl;
                 break;
-
 
             default:
                 cout << "Opcion no valida." << endl;
