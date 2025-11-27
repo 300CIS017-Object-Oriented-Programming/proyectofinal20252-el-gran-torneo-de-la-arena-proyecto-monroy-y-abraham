@@ -19,7 +19,7 @@
 
 using namespace std;
 
-// --- FUNCIONES DE UTILIDAD (PARA QUE NO FALLE EL MENU) ---
+// --- FUNCIONES DE UTILIDAD (PARA QUE NO FALLE EL MENU, AJUSTE VISUAL) ---
 
 
 // Esto arregla el error visual de que el menu salga incompleto.
